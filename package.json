@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "homepage": "https://diogotupi.github.io/tattooAR/",
+  "homepage": "https://diogotupi.github.io/tattooar/",
   "scripts": {
     "dev": "vite",
     "gen-demo-glb": "node scripts/gen-demo-overlay-glb.mjs",
