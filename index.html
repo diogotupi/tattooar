@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#0a0a0c" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>CAPAZ TATTOO — AR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <header class="brand">
+        <span class="brand__capaz">CAPAZ</span>
+        <span class="brand__tattoo">TATTOO</span>
+      </header>
+
+      <main class="hero">
+        <p class="hero__hint">Aponte para uma arte reconhecida e veja a animação em cima dela.</p>
+        <button type="button" class="cam-btn" id="openAr" aria-label="Abrir câmera AR">
+          <span class="cam-btn__ring" aria-hidden="true"></span>
+          <span class="cam-btn__body" aria-hidden="true">
+            <svg class="cam-btn__icon" viewBox="0 0 64 64" aria-hidden="true">
+              <defs>
+                <linearGradient id="lensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#1a2332" />
+                  <stop offset="55%" stop-color="#0d1117" />
+                  <stop offset="100%" stop-color="#243447" />
+                </linearGradient>
+                <radialGradient id="glassGlare" cx="35%" cy="30%" r="55%">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.45)" />
+                  <stop offset="40%" stop-color="rgba(255,255,255,0.08)" />
+                  <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+                </radialGradient>
+              </defs>
+              <rect x="6" y="18" width="52" height="36" rx="10" fill="#12141a" stroke="url(#lensGrad)" stroke-width="2" />
+              <circle cx="32" cy="36" r="14" fill="url(#lensGrad)" stroke="#2a3444" stroke-width="1.5" />
+              <circle cx="32" cy="36" r="11" fill="url(#glassGlare)" />
+              <circle cx="48" cy="26" r="3" fill="#2e3544" opacity="0.9" />
+            </svg>
+          </span>
+        </button>
+        <p class="hero__status" id="homeStatus"></p>
+      </main>
+
+      <footer class="foot">
+        <a class="foot__link" href="./bank.html">Banco de artes</a>
+      </footer>
+
+      <div class="ar-layer" id="arLayer" hidden>
+        <div class="ar-layer__chrome">
+          <button type="button" class="ar-back" id="closeAr" aria-label="Fechar câmera">
+            ← Fechar
+          </button>
+          <p class="ar-layer__scan" id="scanHint">Procurando arte…</p>
+        </div>
+        <div class="ar-layer__viewport" id="arContainer"></div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

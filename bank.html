@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#0a0a0c" />
+    <title>CAPAZ TATTOO — Banco AR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bank-body">
+    <div id="bankApp">
+      <header class="bank-head">
+        <a class="bank-head__home" href="./index.html">← Início</a>
+        <div class="bank-head__title">
+          <span class="bank-head__capaz">CAPAZ</span>
+          <span class="bank-head__tattoo">TATTOO · Banco AR</span>
+        </div>
+      </header>
+
+      <section class="bank-intro">
+        <p>
+          Para cada arte: envie a <strong>imagem impressa</strong> que a câmera deve reconhecer (boa luz, contraste)
+          e o arquivo <strong>GLB</strong> da animação 3D que aparece em cima. A ordem das linhas define o índice do
+          alvo (0, 1, 2…). Depois de compilar, os dados ficam salvos neste aparelho (IndexedDB).
+        </p>
+      </section>
+
+      <div class="bank-toolbar">
+        <button type="button" class="btn primary" id="addRow">+ Adicionar arte</button>
+        <button type="button" class="btn primary" id="compileSave">Compilar e salvar</button>
+        <button type="button" class="btn danger" id="clearAll">Limpar tudo</button>
+      </div>
+
+      <p class="bank-progress" id="compileProgress" role="status"></p>
+
+      <div class="bank-rows" id="rows"></div>
+
+      <section class="bank-actions">
+        <button type="button" class="btn" id="exportBundle">Exportar JSON (backup)</button>
+        <label class="btn file">
+          Importar arquivo
+          <input type="file" id="importBundle" accept=".json,application/json" hidden />
+        </label>
+      </section>
+
+      <p class="bank-footnote">
+        A compilação roda no seu navegador (pode demorar). No celular use HTTPS (o comando
+        <code>npm run dev</code> já ativa SSL local do Vite).
+      </p>
+    </div>
+    <script type="module" src="/src/bank.ts"></script>
+  </body>
+</html>

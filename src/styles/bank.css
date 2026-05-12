@@ -1,0 +1,180 @@
+:root {
+  color-scheme: dark;
+  --bg: #07070a;
+  --bg-elev: #101018;
+  --ink: #f4f1ea;
+  --muted: #9a96a8;
+  --accent: #c9a24d;
+  --accent-2: #e8d4a4;
+  --danger: #c45b5b;
+  --font-display: "Syne", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.bank-body {
+  margin: 0;
+  min-height: 100dvh;
+  background: radial-gradient(120% 80% at 50% -10%, #1a1424 0%, var(--bg) 55%);
+  color: var(--ink);
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+#bankApp {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: calc(14px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));
+}
+
+.bank-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.bank-head__home {
+  color: var(--accent-2);
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+}
+
+.bank-head__title {
+  text-align: left;
+}
+
+.bank-head__capaz {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: linear-gradient(120deg, var(--accent-2), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bank-head__tattoo {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.bank-intro p {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.bank-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.btn {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.btn.primary {
+  border-color: rgba(201, 162, 77, 0.45);
+  background: linear-gradient(120deg, rgba(201, 162, 77, 0.22), rgba(120, 90, 160, 0.18));
+}
+
+.btn.danger {
+  border-color: rgba(196, 91, 91, 0.45);
+  color: #ffd6d6;
+}
+
+.btn.file {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bank-progress {
+  min-height: 2.5lh;
+  margin: 0 0 14px;
+  color: var(--accent-2);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.bank-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(16, 16, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.field input[type="text"],
+.field input[type="file"] {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(8, 8, 12, 0.65);
+  color: var(--ink);
+  padding: 10px 10px;
+  font: inherit;
+}
+
+.field input[type="file"] {
+  padding: 8px;
+}
+
+.row-remove {
+  justify-self: start;
+}
+
+.bank-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.bank-footnote {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.bank-footnote code {
+  color: var(--accent-2);
+  font-size: 0.78rem;
+}

@@ -1,0 +1,21 @@
+{
+  "name": "capaz-tattoo-ar",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "mind-ar": "1.2.5",
+    "three": "0.151.3"
+  },
+  "devDependencies": {
+    "@types/three": "0.151.0",
+    "@vitejs/plugin-basic-ssl": "^1.1.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.4.0"
+  }
+}
