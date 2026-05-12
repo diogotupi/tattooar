@@ -18,10 +18,10 @@ let session: { stop: () => void } | null = null;
 async function refreshHomeMessage(): Promise<void> {
   const bundle = await loadBundle();
   if (!bundle || bundle.entries.length === 0) {
-    homeStatus.textContent =
+    homeStatus!.textContent =
       "Ainda não há artes salvas. Acesse o Banco no rodapé, adicione imagens + GLB e compile.";
   } else {
-    homeStatus.textContent = `${bundle.entries.length} arte(s) pronta(s). Toque na câmera para testar.`;
+    homeStatus!.textContent = `${bundle.entries.length} arte(s) pronta(s). Toque na câmera para testar.`;
   }
 }
 
@@ -55,8 +55,8 @@ openAr.addEventListener("click", async () => {
 function closeSession(): void {
   session?.stop();
   session = null;
-  arContainer.innerHTML = "";
-  arLayer.hidden = true;
+  arContainer!.innerHTML = "";
+  arLayer!.hidden = true;
   document.body.classList.remove("ar-open");
   void refreshHomeMessage();
 }

@@ -3,9 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "homepage": "https://diogotupi.github.io/tattooAR/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:gh": "tsc && vite build --base /tattooAR/",
+    "deploy": "npm run build:gh && gh-pages -d dist",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -15,6 +18,7 @@
   "devDependencies": {
     "@types/three": "0.151.0",
     "@vitejs/plugin-basic-ssl": "^1.1.0",
+    "gh-pages": "^6.3.0",
     "typescript": "^5.4.5",
     "vite": "^5.4.0"
   }

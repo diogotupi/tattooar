@@ -6,6 +6,10 @@ import { defineConfig } from "vite";
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  // Use "/" no dia a dia. Só defina base com subpasta (ex.: "/tattooAR/") ao
+  // fazer build para GitHub Pages em site de projeto — senão o dev server
+  // exige abrir essa URL e os assets quebram na raiz.
+  base: "/",
   plugins: [basicSsl()],
   optimizeDeps: {
     exclude: ["mind-ar"],

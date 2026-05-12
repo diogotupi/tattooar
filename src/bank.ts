@@ -36,7 +36,7 @@ function uid(): string {
 }
 
 function renderRows(): void {
-  rowsHost.innerHTML = "";
+  rowsHost!.innerHTML = "";
   for (const row of rows) {
     const wrap = document.createElement("div");
     wrap.className = "row";
@@ -82,7 +82,7 @@ function renderRows(): void {
       renderRows();
     });
 
-    rowsHost.appendChild(wrap);
+    rowsHost!.appendChild(wrap);
   }
 }
 
@@ -144,7 +144,7 @@ compileBtn.addEventListener("click", async () => {
       const compiler = new Compiler();
       progressEl.textContent = "Compilando (pode levar vários minutos)…";
 
-      await compiler.compileImageTargets(images, (p) => {
+      await compiler.compileImageTargets(images, (p: number) => {
         progressEl.textContent = `Compilando… ${p.toFixed(1)}%`;
       });
 
@@ -219,9 +219,9 @@ async function bootstrap(): Promise<void> {
   addRow();
   if (existing && existing.entries.length > 0) {
     const names = existing.entries.map((e) => e.title).join(", ");
-    progressEl.textContent = `Neste aparelho já existe um pacote com: ${names}. Para recompilar, escolha de novo imagem + GLB na mesma ordem das linhas.`;
+    progressEl!.textContent = `Neste aparelho já existe um pacote com: ${names}. Para recompilar, escolha de novo imagem + GLB na mesma ordem das linhas.`;
   } else {
-    progressEl.textContent = "Adiciona imagens alvo + GLB por linha, depois “Compilar e salvar”.";
+    progressEl!.textContent = "Adiciona imagens alvo + GLB por linha, depois “Compilar e salvar”.";
   }
 }
 
