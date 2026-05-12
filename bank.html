@@ -16,6 +16,30 @@
     />
   </head>
   <body class="bank-body">
+    <div id="adminGate" class="admin-gate" hidden>
+      <div class="admin-gate__card">
+        <p class="admin-gate__eyebrow">CAPAZ TATTOO</p>
+        <h1 class="admin-gate__title">Área de administrador</h1>
+        <p class="admin-gate__text">
+          Introduz a chave para gerir o banco de artes (imagens alvo, GLB e compilação).
+        </p>
+        <form class="admin-gate__form" id="adminGateForm">
+          <label class="field">
+            <span>Chave</span>
+            <input
+              type="password"
+              id="adminKeyInput"
+              name="adminKey"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+          <p class="admin-gate__err" id="adminGateErr" role="alert"></p>
+          <button type="submit" class="btn primary">Entrar</button>
+        </form>
+      </div>
+    </div>
+
     <div id="bankApp">
       <header class="bank-head">
         <a class="bank-head__home" href="./index.html">← Início</a>

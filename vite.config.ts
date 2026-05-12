@@ -17,8 +17,17 @@ export default defineConfig(({ mode }) => {
 
   return {
     base,
+    /** TensorFlow.js (Mind AR compiler) espera `global` no browser em alguns bundles. */
+    define: {
+      global: "globalThis",
+    },
     plugins: [basicSsl()],
     optimizeDeps: {
+      /**
+       * Não pré-empacotar mind-ar: o compilador usa `compiler.worker.js?worker&inline`
+       * e o esbuild não expõe default export compatível com o import do Mind AR.
+       * O `src/mind-ar-compiler.ts` garante mesma origem / resolução correcta em dev.
+       */
       exclude: ["mind-ar"],
     },
     worker: {

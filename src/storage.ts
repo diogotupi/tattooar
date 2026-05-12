@@ -1,5 +1,7 @@
 export type ArEntryMeta = {
   title: string;
+  /** Caminho relativo ao site, ex.: `videos/onca.mp4` (sem barra inicial). */
+  videoSrc?: string;
 };
 
 export type ArBundle = {
@@ -85,17 +87,19 @@ function base64ToArrayBuffer(b64: string): ArrayBuffer {
 export type ExportPayload = {
   version: 1;
   mindBase64: string;
-  entries: Array<{ title: string; glbBase64: string }>;
+  entries: Array<{ title: string; glbBase64?: string; videoSrc?: string }>;
 };
 
 export function bundleToExportPayload(bundle: ArBundle): ExportPayload {
   return {
     version: 1,
     mindBase64: arrayBufferToBase64(bundle.mind),
-    entries: bundle.entries.map((e) => ({
-      title: e.title,
-      glbBase64: arrayBufferToBase64(e.glb),
-    })),
+    entries: bundle.entries.map((e) => {
+      if (e.videoSrc) {
+        return { title: e.title, videoSrc: e.videoSrc };
+      }
+      return { title: e.title, glbBase64: arrayBufferToBase64(e.glb) };
+    }),
   };
 }
 
@@ -106,10 +110,22 @@ export function importPayloadToBundle(data: ExportPayload): ArBundle {
   return {
     version: 1,
     mind: base64ToArrayBuffer(data.mindBase64),
-    entries: data.entries.map((e) => ({
-      title: e.title,
-      glb: base64ToArrayBuffer(e.glbBase64),
-    })),
+    entries: data.entries.map((e) => {
+      if (e.videoSrc) {
+        return {
+          title: e.title,
+          glb: new ArrayBuffer(0),
+          videoSrc: e.videoSrc,
+        };
+      }
+      if (!e.glbBase64) {
+        throw new Error("Entrada sem GLB nem vídeo.");
+      }
+      return {
+        title: e.title,
+        glb: base64ToArrayBuffer(e.glbBase64),
+      };
+    }),
   };
 }
 
