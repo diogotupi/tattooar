@@ -1,0 +1,19 @@
+DEMO AR — ficheiros nesta pasta
+================================
+
+1) alvo-planeta.jpg  
+   Substitui por uma cópia da TUA imagem do planeta (a mesma vista que vais imprimir / mostrar à câmera).  
+   O ficheiro que está agora é só um placeholder para testar o fluxo.
+
+2) alvo-segunda.jpg  
+   Placeholder para uma segunda alvo; podes trocar pela tua segunda imagem.
+
+3) overlay-teste.glb  
+   Modelo 3D dourado simples (tipo “joinha” / destaque). Regenerar: npm run gen-demo-glb
+
+Como usar no site
+-----------------
+- Com o projeto a correr (npm run dev), abre a página do Banco (admin).
+- Adiciona uma linha: escolhe “alvo-planeta.jpg” como imagem alvo e “overlay-teste.glb” como GLB.
+- Clica “Compilar e salvar” e espera (pode demorar).
+- Vai ao Início, abre a câmera e aponta para a imagem impressa na mesma escala/conteúdo que usaste na compilação.

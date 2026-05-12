@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#0a0a0c" />
+    <title>CAPAZ TATTOO — Banco AR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/tattooar/assets/bank-BC30cToN.js"></script>
+    <link rel="modulepreload" crossorigin href="/tattooar/assets/storage-DnvLlD-J.js">
+    <link rel="stylesheet" crossorigin href="/tattooar/assets/bank-BvMqif9w.css">
+  </head>
+  <body class="bank-body">
+    <div id="adminGate" class="admin-gate" hidden>
+      <div class="admin-gate__card">
+        <p class="admin-gate__eyebrow">CAPAZ TATTOO</p>
+        <h1 class="admin-gate__title">Área de administrador</h1>
+        <p class="admin-gate__text">
+          Introduz a chave para gerir o banco de artes (imagens alvo, GLB e compilação).
+        </p>
+        <form class="admin-gate__form" id="adminGateForm">
+          <label class="field">
+            <span>Chave</span>
+            <input
+              type="password"
+              id="adminKeyInput"
+              name="adminKey"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+          <p class="admin-gate__err" id="adminGateErr" role="alert"></p>
+          <button type="submit" class="btn primary">Entrar</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="bankApp">
+      <header class="bank-head">
+        <a class="bank-head__home" href="./index.html">← Início</a>
+        <div class="bank-head__title">
+          <span class="bank-head__capaz">CAPAZ</span>
+          <span class="bank-head__tattoo">TATTOO · Banco AR</span>
+        </div>
+      </header>
+
+      <section class="bank-intro">
+        <p>
+          Para cada arte: envie a <strong>imagem impressa</strong> que a câmera deve reconhecer (boa luz, contraste)
+          e o arquivo <strong>GLB</strong> da animação 3D que aparece em cima. A ordem das linhas define o índice do
+          alvo (0, 1, 2…). Depois de compilar, os dados ficam salvos neste aparelho (IndexedDB).
+        </p>
+      </section>
+
+      <div class="bank-toolbar">
+        <button type="button" class="btn primary" id="addRow">+ Adicionar arte</button>
+        <button type="button" class="btn primary" id="compileSave">Compilar e salvar</button>
+        <button type="button" class="btn danger" id="clearAll">Limpar tudo</button>
+      </div>
+
+      <p class="bank-progress" id="compileProgress" role="status"></p>
+
+      <div class="bank-rows" id="rows"></div>
+
+      <section class="bank-actions">
+        <button type="button" class="btn" id="exportBundle">Exportar JSON (backup)</button>
+        <label class="btn file">
+          Importar arquivo
+          <input type="file" id="importBundle" accept=".json,application/json" hidden />
+        </label>
+      </section>
+
+      <p class="bank-footnote">
+        A compilação roda no seu navegador (pode demorar). No celular use HTTPS (o comando
+        <code>npm run dev</code> já ativa SSL local do Vite).
+      </p>
+    </div>
+  </body>
+</html>
