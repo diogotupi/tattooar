@@ -1,0 +1,15 @@
+Pasta de vídeos do AR (ficheiros estáticos no deploy)
+=====================================================
+
+O JSON exportado (ex.: public/bundles/onca-teste.json) referencia caminhos como
+`videos/onca.mp4`. Esses ficheiros têm de existir AQUI, com o mesmo nome,
+para a câmara AR conseguir carregar a animação em qualquer dispositivo.
+
+Para o pacote de exemplo "onca teste":
+  Coloca o teu ficheiro em:  public/videos/onca.mp4
+
+Depois de `npm run build`, o vídeo fica em /videos/onca.mp4 no site (ou
+/tattooar/videos/onca.mp4 se usares VITE_BASE_PATH=/tattooar/).
+
+Nota: vídeos e JSON grandes aumentam o tamanho do deploy; GitHub Pages aceita
+ficheiros grandes dentro dos limites da conta/repositório.
