@@ -1,4 +1,5 @@
 import "./styles/home.css";
+import logoUrl from "../assets/logo.png";
 import {
   importPayloadToBundle,
   loadBundle,
@@ -7,7 +8,14 @@ import {
 } from "./storage";
 import { startArSession } from "./ar-session";
 
-const PUBLIC_BUNDLE_URL = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}bundle.json`;
+function publicBundleRelativePath(): string {
+  const raw = (import.meta.env.VITE_PUBLIC_BUNDLE as string | undefined)?.trim();
+  if (raw) return raw.replace(/^\/+/, "");
+  /** Ficheiro em `public/bundles/` — copiado tal qual para a raiz do deploy. */
+  return "bundles/onca-teste.json";
+}
+
+const PUBLIC_BUNDLE_URL = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}${publicBundleRelativePath()}`;
 
 function isExportPayload(v: unknown): v is ExportPayload {
   if (!v || typeof v !== "object") return false;
@@ -34,13 +42,13 @@ async function trySyncPublicBundle(): Promise<void> {
     if (!res.ok) return;
     const data: unknown = await res.json();
     if (!isExportPayload(data)) {
-      console.warn("[AR] bundle.json inválido ou versão inesperada.");
+      console.warn(`[AR] Pacote público inválido (${publicBundleRelativePath()}).`);
       return;
     }
     const bundle = importPayloadToBundle(data);
     await saveBundle(bundle);
   } catch (e) {
-    console.warn("[AR] Não foi possível carregar bundle.json público.", e);
+    console.warn(`[AR] Não foi possível carregar o pacote público (${PUBLIC_BUNDLE_URL}).`, e);
   }
 }
 
@@ -50,10 +58,13 @@ const arLayer = document.querySelector<HTMLDivElement>("#arLayer");
 const arContainer = document.querySelector<HTMLDivElement>("#arContainer");
 const homeStatus = document.querySelector<HTMLParagraphElement>("#homeStatus");
 const scanHint = document.querySelector<HTMLParagraphElement>("#scanHint");
+const brandLogo = document.querySelector<HTMLImageElement>(".brand__logo");
 
-if (!openAr || !closeAr || !arLayer || !arContainer || !homeStatus || !scanHint) {
+if (!openAr || !closeAr || !arLayer || !arContainer || !homeStatus || !scanHint || !brandLogo) {
   throw new Error("Markup principal incompleto.");
 }
+
+brandLogo.src = logoUrl;
 
 let session: { stop: () => void } | null = null;
 
@@ -61,7 +72,7 @@ async function refreshHomeMessage(): Promise<void> {
   const bundle = await loadBundle();
   if (!bundle || bundle.entries.length === 0) {
     homeStatus!.textContent =
-      "Ainda não há artes neste dispositivo. O administrador pode carregar o pacote (importação no painel interno).";
+      "Ainda não há artes neste dispositivo. Com deploy completo (JSON em public + vídeos/GLBs referenciados), recarrega com HTTPS; o site sincroniza o pacote sozinho. Também podes importar no painel do banco.";
   } else {
     homeStatus!.textContent = `${bundle.entries.length} arte(s) pronta(s). Toque na câmera para testar.`;
   }
