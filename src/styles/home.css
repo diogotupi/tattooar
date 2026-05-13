@@ -28,21 +28,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: calc(12px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom));
-}
-
-.brand {
-  margin-top: 4px;
-  text-align: center;
-}
-
-.brand__logo {
-  display: block;
-  width: min(160px, 42vw);
-  height: auto;
-  margin-inline: auto;
-  object-fit: contain;
-  filter: grayscale(1);
+  padding: calc(8px + env(safe-area-inset-top)) 22px calc(16px + env(safe-area-inset-bottom));
 }
 
 .hero {
@@ -50,25 +36,45 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 32px;
-  width: min(420px, 100%);
+  justify-content: flex-start;
+  width: min(520px, 100%);
   text-align: center;
+  padding-top: clamp(8px, 2dvh, 20px);
+  gap: clamp(22px, 5.5dvh, 40px);
+}
+
+.brand {
+  margin: 0;
+  margin-top: clamp(28px, 9dvh, 72px);
+  width: 100%;
+  text-align: center;
+}
+
+.brand__logo {
+  display: block;
+  width: min(248px, 72vw);
+  max-height: min(120px, 22dvh);
+  height: auto;
+  margin-inline: auto;
+  object-fit: contain;
+  filter: grayscale(1);
 }
 
 .hero__hint {
   margin: 0;
-  font-size: 0.8125rem;
+  padding: 0 4px;
+  font-size: clamp(0.84rem, 2.8vw, 0.95rem);
   font-weight: 400;
   color: var(--muted);
   line-height: 1.5;
-  max-width: 32ch;
+  max-width: 34ch;
 }
 
 .cam-btn {
   position: relative;
-  width: min(200px, 68vw);
+  width: min(220px, 72vw);
   aspect-ratio: 1;
+  margin-top: clamp(4px, 2dvh, 20px);
   border: none;
   padding: 0;
   border-radius: 999px;
@@ -119,26 +125,12 @@ body {
 
 .foot {
   margin-top: auto;
-  padding-top: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  padding-top: 20px;
   text-align: center;
 }
 
-.foot__status {
-  margin: 0;
-  min-height: 2.75lh;
-  max-width: 36ch;
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--muted);
-  line-height: 1.45;
-}
-
 .foot__note {
-  font-size: 0.6875rem;
+  font-size: clamp(0.7rem, 2vw, 0.8rem);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
@@ -199,6 +191,47 @@ body.ar-open {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 720px) {
+  #app {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .hero {
+    padding-top: clamp(24px, 4vh, 56px);
+    gap: clamp(28px, 4vh, 48px);
+    max-width: 640px;
+  }
+
+  .brand {
+    margin-top: clamp(40px, 8vh, 100px);
+  }
+
+  .brand__logo {
+    width: min(380px, 42vw);
+    max-height: min(160px, 24vh);
+  }
+
+  .hero__hint {
+    font-size: 1.05rem;
+    max-width: 42ch;
+  }
+
+  .cam-btn {
+    width: min(300px, 34vw);
+    margin-top: clamp(12px, 2.5vh, 28px);
+  }
+
+  .cam-btn__body {
+    inset: 10px;
+  }
+
+  .foot__note {
+    font-size: 0.82rem;
+    letter-spacing: 0.22em;
   }
 }
 
