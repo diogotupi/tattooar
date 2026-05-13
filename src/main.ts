@@ -32,6 +32,10 @@ function isExportPayload(v: unknown): v is ExportPayload {
     const hasGlb = typeof glb === "string" && glb.length > 0;
     const hasVid = typeof vid === "string" && vid.length > 0;
     if (!hasGlb && !hasVid) return false;
+    const ta = row.targetAspect;
+    if (ta !== undefined && (typeof ta !== "number" || !Number.isFinite(ta) || ta <= 0)) {
+      return false;
+    }
   }
   return true;
 }

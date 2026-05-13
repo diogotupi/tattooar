@@ -7,7 +7,7 @@ import type { ArBundle, ArEntryMeta } from "./storage";
 type VideoPlane = {
   video: HTMLVideoElement;
   texture: THREE.VideoTexture;
-  material: THREE.MeshBasicMaterial;
+  material: THREE.ShaderMaterial;
   geometry: THREE.PlaneGeometry;
   mesh: THREE.Mesh;
 };
@@ -23,6 +23,44 @@ type RunningAr = {
 };
 
 let current: RunningAr | null = null;
+
+const videoPlaneVertexShader = `
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+
+/** Mistura tipo screen no preto + alpha suave; `object-fit: cover` no plano do marcador. */
+const videoPlaneFragmentShader = `
+uniform sampler2D vidTex;
+uniform float uMarkerAspect;
+uniform float uVideoAspect;
+uniform float uKeyCutoff;
+uniform float uKeyFeather;
+
+varying vec2 vUv;
+
+void main() {
+  float ratio = uVideoAspect / uMarkerAspect;
+  vec2 uv = vUv;
+  if (ratio > 1.0) {
+    uv.x = (uv.x - 0.5) / ratio + 0.5;
+  } else {
+    uv.y = (uv.y - 0.5) * ratio + 0.5;
+  }
+
+  if (uv.x < 0.001 || uv.x > 0.999 || uv.y < 0.001 || uv.y > 0.999) {
+    discard;
+  }
+
+  vec4 texel = texture2D(vidTex, uv);
+  float k = max(texel.r, max(texel.g, texel.b));
+  float a = smoothstep(uKeyCutoff, uKeyCutoff + uKeyFeather, k);
+  gl_FragColor = vec4(texel.rgb * a, a);
+}
+`;
 
 function disposeRunning(r: RunningAr): void {
   try {
@@ -90,19 +128,36 @@ async function createVideoPlane(
   video.pause();
 
   const texture = new THREE.VideoTexture(video);
-
-  const material = new THREE.MeshBasicMaterial({
-    map: texture,
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  });
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
 
   const vw = video.videoWidth || 1;
   const vh = video.videoHeight || 1;
-  const aspect = vw / vh;
-  const planeW = 0.75;
-  const planeH = planeW / aspect;
+  const videoAspect = vw / vh;
+  const markerAspect =
+    typeof entry.targetAspect === "number" && Number.isFinite(entry.targetAspect) && entry.targetAspect > 0
+      ? entry.targetAspect
+      : videoAspect;
+
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      vidTex: { value: texture },
+      uMarkerAspect: { value: markerAspect },
+      uVideoAspect: { value: videoAspect },
+      uKeyCutoff: { value: 0.032 },
+      uKeyFeather: { value: 0.07 },
+    },
+    vertexShader: videoPlaneVertexShader,
+    fragmentShader: videoPlaneFragmentShader,
+    transparent: true,
+    depthWrite: false,
+    toneMapped: false,
+    side: THREE.DoubleSide,
+    premultipliedAlpha: true,
+  });
+
+  const planeW = 1;
+  const planeH = 1 / markerAspect;
   const geometry = new THREE.PlaneGeometry(planeW, planeH);
   const mesh = new THREE.Mesh(geometry, material);
   mesh.frustumCulled = false;
@@ -150,7 +205,6 @@ export async function startArSession(
         const plane = await createVideoPlane(entry, baseHref);
         videoPlanes.push(plane);
         anchor.group.add(plane.mesh);
-        wobble.push({ mesh: plane.mesh, baseY: plane.mesh.position.y, phase: i * 1.7 });
 
         const v = plane.video;
         anchor.onTargetFound = () => {

@@ -2,6 +2,11 @@ export type ArEntryMeta = {
   title: string;
   /** Caminho relativo ao site, ex.: `videos/onca.mp4` (sem barra inicial). */
   videoSrc?: string;
+  /**
+   * Largura / altura da imagem-alvo impressa (a mesma usada no Mind AR).
+   * Se omitido, usa-se a proporção do vídeo (assume vídeo alinhado ao marcador).
+   */
+  targetAspect?: number;
 };
 
 export type ArBundle = {
@@ -87,7 +92,7 @@ function base64ToArrayBuffer(b64: string): ArrayBuffer {
 export type ExportPayload = {
   version: 1;
   mindBase64: string;
-  entries: Array<{ title: string; glbBase64?: string; videoSrc?: string }>;
+  entries: Array<{ title: string; glbBase64?: string; videoSrc?: string; targetAspect?: number }>;
 };
 
 export function bundleToExportPayload(bundle: ArBundle): ExportPayload {
@@ -96,7 +101,14 @@ export function bundleToExportPayload(bundle: ArBundle): ExportPayload {
     mindBase64: arrayBufferToBase64(bundle.mind),
     entries: bundle.entries.map((e) => {
       if (e.videoSrc) {
-        return { title: e.title, videoSrc: e.videoSrc };
+        const row: { title: string; videoSrc: string; targetAspect?: number } = {
+          title: e.title,
+          videoSrc: e.videoSrc,
+        };
+        if (typeof e.targetAspect === "number" && Number.isFinite(e.targetAspect)) {
+          row.targetAspect = e.targetAspect;
+        }
+        return row;
       }
       return { title: e.title, glbBase64: arrayBufferToBase64(e.glb) };
     }),
@@ -116,6 +128,9 @@ export function importPayloadToBundle(data: ExportPayload): ArBundle {
           title: e.title,
           glb: new ArrayBuffer(0),
           videoSrc: e.videoSrc,
+          ...(typeof e.targetAspect === "number" && Number.isFinite(e.targetAspect)
+            ? { targetAspect: e.targetAspect }
+            : {}),
         };
       }
       if (!e.glbBase64) {
