@@ -12,7 +12,7 @@ function publicBundleRelativePath(): string {
   const raw = (import.meta.env.VITE_PUBLIC_BUNDLE as string | undefined)?.trim();
   if (raw) return raw.replace(/^\/+/, "");
   /** Ficheiro em `public/bundles/` — copiado tal qual para a raiz do deploy. */
-  return "bundles/born-to-be-tattooed.json";
+  return "bundles/born-to-be.json";
 }
 
 const PUBLIC_BUNDLE_URL = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}${publicBundleRelativePath()}`;
