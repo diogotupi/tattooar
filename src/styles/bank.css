@@ -26,6 +26,18 @@
   letter-spacing: 0.02em;
 }
 
+/* O atributo [hidden] por vezes perde para regras com #id; garantimos que nada “vaza” ao scroll. */
+#adminGate[hidden],
+#bankApp[hidden] {
+  display: none !important;
+}
+
+.bank-body--gate-active {
+  overflow: hidden;
+  height: 100dvh;
+  max-height: 100dvh;
+}
+
 .admin-gate {
   min-height: 100dvh;
   display: flex;

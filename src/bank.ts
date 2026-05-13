@@ -77,6 +77,7 @@ function tryUnlockFromQuery(): boolean {
 }
 
 function setBankUiUnlocked(): void {
+  document.body.classList.remove("bank-body--gate-active");
   bankApp!.hidden = false;
   adminGate!.hidden = true;
 }
@@ -84,6 +85,7 @@ function setBankUiUnlocked(): void {
 function setBankUiLocked(): void {
   bankApp!.hidden = true;
   adminGate!.hidden = false;
+  document.body.classList.add("bank-body--gate-active");
 }
 
 function startAdminGate(): void {
