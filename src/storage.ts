@@ -1,6 +1,6 @@
 export type ArEntryMeta = {
   title: string;
-  /** Caminho relativo ao site, ex.: `videos/onca.mp4` (sem barra inicial). */
+  /** Caminho relativo ao site, ex.: `videos/borntobe.mp4` (sem barra inicial). */
   videoSrc?: string;
   /**
    * Largura / altura da imagem-alvo impressa (a mesma usada no Mind AR).

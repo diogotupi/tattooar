@@ -28,9 +28,9 @@ const mat = new THREE.MeshStandardMaterial({
 });
 
 // “Polegar”: esfera + cilindro inclinado (bem visível em AR)
-const bola = new THREE.Mesh(new THREE.SphereGeometry(0.38, 28, 28), mat);
-bola.position.set(0, 0, 0);
-group.add(bola);
+const sphereMesh = new THREE.Mesh(new THREE.SphereGeometry(0.38, 28, 28), mat);
+sphereMesh.position.set(0, 0, 0);
+group.add(sphereMesh);
 
 const dedo = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.62, 18), mat);
 dedo.rotation.z = Math.PI * 0.15;
