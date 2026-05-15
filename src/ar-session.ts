@@ -2,6 +2,10 @@ import * as THREE from "three";
 import { AnimationMixer } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MindARThree } from "mind-ar/dist/mindar-image-three.prod.js";
+import {
+  createClippingStencilOverlay,
+  enableRendererStencilClipping,
+} from "./clipping-stencil-overlay";
 import type { ArBundle, ArEntryMeta } from "./storage";
 
 type VideoPlane = {
@@ -20,6 +24,8 @@ type RunningAr = {
   cleanupModelUrls: string[];
   wobble: { mesh: THREE.Object3D; baseY: number; phase: number }[];
   videoPlanes: VideoPlane[];
+  clippingUpdates: Array<(delta: number) => void>;
+  clippingDisposers: Array<() => void>;
 };
 
 let current: RunningAr | null = null;
@@ -93,6 +99,9 @@ function disposeRunning(r: RunningAr): void {
     vp.texture.dispose();
     vp.material.dispose();
     vp.geometry.dispose();
+  }
+  for (const dispose of r.clippingDisposers) {
+    dispose();
   }
   if (current === r) {
     current = null;
@@ -194,14 +203,35 @@ export async function startArSession(
 
     const wobble: { mesh: THREE.Object3D; baseY: number; phase: number }[] = [];
     const videoPlanes: VideoPlane[] = [];
+    const clippingUpdates: Array<(delta: number) => void> = [];
+    const clippingDisposers: Array<() => void> = [];
     const baseHref = baseHrefFromVite();
+
+    const needsStencil = bundle.entries.some((e) => e.overlay === "clipping-stencil");
+    if (needsStencil) {
+      const patched = enableRendererStencilClipping(mindar.renderer);
+      (mindar as { renderer: THREE.WebGLRenderer }).renderer = patched;
+    }
 
     for (let i = 0; i < bundle.entries.length; i++) {
       const entry = bundle.entries[i];
       const anchor = mindar.addAnchor(i);
-      const useVideo = Boolean(entry.videoSrc) && entry.glb.byteLength === 0;
+      const useOverlay = entry.overlay === "clipping-stencil";
+      const useVideo = Boolean(entry.videoSrc) && entry.glb.byteLength === 0 && !useOverlay;
 
-      if (useVideo) {
+      if (useOverlay) {
+        const effect = createClippingStencilOverlay();
+        anchor.group.add(effect.root);
+        clippingUpdates.push(effect.update);
+        clippingDisposers.push(effect.dispose);
+
+        anchor.onTargetFound = () => {
+          onStatus(`Reconhecido: ${entry.title}`);
+        };
+        anchor.onTargetLost = () => {
+          onStatus("Procurando arte…");
+        };
+      } else if (useVideo) {
         const plane = await createVideoPlane(entry, baseHref);
         videoPlanes.push(plane);
         anchor.group.add(plane.mesh);
@@ -273,6 +303,8 @@ export async function startArSession(
       cleanupModelUrls,
       wobble,
       videoPlanes,
+      clippingUpdates,
+      clippingDisposers,
     };
     mindObjectUrl = null;
     current = running;
@@ -286,6 +318,9 @@ export async function startArSession(
       }
       for (const m of mixers) {
         m.update(delta);
+      }
+      for (const tick of running.clippingUpdates) {
+        tick(delta);
       }
       for (const vp of running.videoPlanes) {
         vp.texture.needsUpdate = true;

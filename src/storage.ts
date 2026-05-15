@@ -1,3 +1,6 @@
+/** Efeitos 3D embutidos no código (sem GLB/MP4 externo). */
+export type ArBuiltinOverlay = "clipping-stencil";
+
 export type ArEntryMeta = {
   title: string;
   /** Caminho relativo ao site, ex.: `videos/borntobe.mp4` (sem barra inicial). */
@@ -7,6 +10,8 @@ export type ArEntryMeta = {
    * Se omitido, usa-se a proporção do vídeo (assume vídeo alinhado ao marcador).
    */
   targetAspect?: number;
+  /** Animação Three.js integrada (ex.: demo clipping stencil). */
+  overlay?: ArBuiltinOverlay;
 };
 
 export type ArBundle = {
@@ -92,7 +97,13 @@ function base64ToArrayBuffer(b64: string): ArrayBuffer {
 export type ExportPayload = {
   version: 1;
   mindBase64: string;
-  entries: Array<{ title: string; glbBase64?: string; videoSrc?: string; targetAspect?: number }>;
+  entries: Array<{
+    title: string;
+    glbBase64?: string;
+    videoSrc?: string;
+    targetAspect?: number;
+    overlay?: ArBuiltinOverlay;
+  }>;
 };
 
 export function bundleToExportPayload(bundle: ArBundle): ExportPayload {
@@ -100,6 +111,9 @@ export function bundleToExportPayload(bundle: ArBundle): ExportPayload {
     version: 1,
     mindBase64: arrayBufferToBase64(bundle.mind),
     entries: bundle.entries.map((e) => {
+      if (e.overlay) {
+        return { title: e.title, overlay: e.overlay };
+      }
       if (e.videoSrc) {
         const row: { title: string; videoSrc: string; targetAspect?: number } = {
           title: e.title,
@@ -123,6 +137,13 @@ export function importPayloadToBundle(data: ExportPayload): ArBundle {
     version: 1,
     mind: base64ToArrayBuffer(data.mindBase64),
     entries: data.entries.map((e) => {
+      if (e.overlay) {
+        return {
+          title: e.title,
+          glb: new ArrayBuffer(0),
+          overlay: e.overlay,
+        };
+      }
       if (e.videoSrc) {
         return {
           title: e.title,
@@ -134,7 +155,7 @@ export function importPayloadToBundle(data: ExportPayload): ArBundle {
         };
       }
       if (!e.glbBase64) {
-        throw new Error("Entrada sem GLB nem vídeo.");
+        throw new Error("Entrada sem GLB, vídeo nem overlay.");
       }
       return {
         title: e.title,
