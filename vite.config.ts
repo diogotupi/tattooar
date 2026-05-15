@@ -38,6 +38,7 @@ export default defineConfig(({ mode }) => {
         input: {
           main: path.resolve(rootDir, "index.html"),
           bank: path.resolve(rootDir, "bank.html"),
+          compileBundles: path.resolve(rootDir, "compile-bundles.html"),
         },
       },
     },

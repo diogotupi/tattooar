@@ -11,8 +11,8 @@ import { startArSession } from "./ar-session";
 function publicBundleRelativePath(): string {
   const raw = (import.meta.env.VITE_PUBLIC_BUNDLE as string | undefined)?.trim();
   if (raw) return raw.replace(/^\/+/, "");
-  /** Ficheiro em `public/bundles/` — copiado tal qual para a raiz do deploy. */
-  return "bundles/born-to-be.json";
+  /** Pacote com Born to be + Onça; fallback só Born to be se o ficheiro completo não existir. */
+  return "bundles/arte-completo.json";
 }
 
 const PUBLIC_BUNDLE_URL = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}${publicBundleRelativePath()}`;
@@ -43,9 +43,15 @@ function isExportPayload(v: unknown): v is ExportPayload {
   return true;
 }
 
+const FALLBACK_BUNDLE_URL = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}bundles/born-to-be.json`;
+
 async function trySyncPublicBundle(): Promise<void> {
   try {
-    const res = await fetch(PUBLIC_BUNDLE_URL, { cache: "no-cache" });
+    let res = await fetch(PUBLIC_BUNDLE_URL, { cache: "no-cache" });
+    if (!res.ok && PUBLIC_BUNDLE_URL !== FALLBACK_BUNDLE_URL) {
+      console.warn(`[AR] ${publicBundleRelativePath()} indisponível; a usar born-to-be.json.`);
+      res = await fetch(FALLBACK_BUNDLE_URL, { cache: "no-cache" });
+    }
     if (!res.ok) return;
     const data: unknown = await res.json();
     if (!isExportPayload(data)) {
