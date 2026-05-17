@@ -32,9 +32,15 @@ function isExportPayload(v: unknown): v is ExportPayload {
     const overlay = row.overlay;
     const hasGlb = typeof glb === "string" && glb.length > 0;
     const hasVid = typeof vid === "string" && vid.length > 0;
-    const hasOverlay = overlay === "clipping-stencil";
+    const hasOverlay = overlay === "demo-3d" || overlay === "clipping-stencil";
     if (!hasGlb && !hasVid && !hasOverlay) return false;
-    if (overlay !== undefined && overlay !== "clipping-stencil") return false;
+    if (
+      overlay !== undefined &&
+      overlay !== "demo-3d" &&
+      overlay !== "clipping-stencil"
+    ) {
+      return false;
+    }
     const ta = row.targetAspect;
     if (ta !== undefined && (typeof ta !== "number" || !Number.isFinite(ta) || ta <= 0)) {
       return false;

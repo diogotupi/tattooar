@@ -1,5 +1,5 @@
 /** Efeitos 3D embutidos no código (sem GLB/MP4 externo). */
-export type ArBuiltinOverlay = "clipping-stencil";
+export type ArBuiltinOverlay = "demo-3d" | "clipping-stencil";
 
 export type ArEntryMeta = {
   title: string;

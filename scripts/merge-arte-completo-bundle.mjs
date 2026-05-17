@@ -1,6 +1,6 @@
 /**
  * Junta os .mind de born-to-be + onca-clipping num único pacote de 2 alvos.
- * Índice 0 = Born to be (vídeo), índice 1 = Onça (clipping stencil).
+ * Índice 0 = Born to be (vídeo), índice 1 = Onça (demo 3D de teste).
  */
 import fs from "fs";
 import path from "path";
@@ -32,7 +32,7 @@ const out = {
   mindBase64: Buffer.from(encode(merged)).toString("base64"),
   entries: [
     { title: "Arte 1", videoSrc: "videos/borntobe.mp4" },
-    { title: "Onça", overlay: "clipping-stencil" },
+    { title: "Onça", overlay: "demo-3d" },
   ],
 };
 

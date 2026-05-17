@@ -49,7 +49,7 @@ if (!mindBase64) {
 const out = {
   version: 1,
   mindBase64,
-  entries: [{ title: "Onça", overlay: "clipping-stencil" }],
+  entries: [{ title: "Onça", overlay: "demo-3d" }],
 };
 
 fs.writeFileSync(outPath, JSON.stringify(out), "utf8");

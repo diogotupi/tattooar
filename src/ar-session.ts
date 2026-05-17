@@ -6,7 +6,8 @@ import {
   createClippingStencilOverlay,
   enableRendererStencilClipping,
 } from "./clipping-stencil-overlay";
-import type { ArBundle, ArEntryMeta } from "./storage";
+import { createDemo3DOverlay } from "./demo-3d-overlay";
+import type { ArBundle, ArEntryMeta, ArBuiltinOverlay } from "./storage";
 
 type VideoPlane = {
   video: HTMLVideoElement;
@@ -24,8 +25,8 @@ type RunningAr = {
   cleanupModelUrls: string[];
   wobble: { mesh: THREE.Object3D; baseY: number; phase: number }[];
   videoPlanes: VideoPlane[];
-  clippingUpdates: Array<(delta: number) => void>;
-  clippingDisposers: Array<() => void>;
+  overlayUpdates: Array<(delta: number) => void>;
+  overlayDisposers: Array<() => void>;
 };
 
 let current: RunningAr | null = null;
@@ -100,7 +101,7 @@ function disposeRunning(r: RunningAr): void {
     vp.material.dispose();
     vp.geometry.dispose();
   }
-  for (const dispose of r.clippingDisposers) {
+  for (const dispose of r.overlayDisposers) {
     dispose();
   }
   if (current === r) {
@@ -110,6 +111,15 @@ function disposeRunning(r: RunningAr): void {
 
 function baseHrefFromVite(): string {
   return `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}`;
+}
+
+function createBuiltinOverlay(kind: ArBuiltinOverlay): {
+  root: THREE.Group;
+  update: (delta: number) => void;
+  dispose: () => void;
+} {
+  if (kind === "demo-3d") return createDemo3DOverlay();
+  return createClippingStencilOverlay();
 }
 
 async function createVideoPlane(
@@ -203,8 +213,8 @@ export async function startArSession(
 
     const wobble: { mesh: THREE.Object3D; baseY: number; phase: number }[] = [];
     const videoPlanes: VideoPlane[] = [];
-    const clippingUpdates: Array<(delta: number) => void> = [];
-    const clippingDisposers: Array<() => void> = [];
+    const overlayUpdates: Array<(delta: number) => void> = [];
+    const overlayDisposers: Array<() => void> = [];
     const baseHref = baseHrefFromVite();
 
     const needsStencil = bundle.entries.some((e) => e.overlay === "clipping-stencil");
@@ -216,14 +226,14 @@ export async function startArSession(
     for (let i = 0; i < bundle.entries.length; i++) {
       const entry = bundle.entries[i];
       const anchor = mindar.addAnchor(i);
-      const useOverlay = entry.overlay === "clipping-stencil";
+      const useOverlay = entry.overlay === "demo-3d" || entry.overlay === "clipping-stencil";
       const useVideo = Boolean(entry.videoSrc) && entry.glb.byteLength === 0 && !useOverlay;
 
-      if (useOverlay) {
-        const effect = createClippingStencilOverlay();
+      if (useOverlay && entry.overlay) {
+        const effect = createBuiltinOverlay(entry.overlay);
         anchor.group.add(effect.root);
-        clippingUpdates.push(effect.update);
-        clippingDisposers.push(effect.dispose);
+        overlayUpdates.push(effect.update);
+        overlayDisposers.push(effect.dispose);
 
         anchor.onTargetFound = () => {
           onStatus(`Reconhecido: ${entry.title}`);
@@ -303,8 +313,8 @@ export async function startArSession(
       cleanupModelUrls,
       wobble,
       videoPlanes,
-      clippingUpdates,
-      clippingDisposers,
+      overlayUpdates,
+      overlayDisposers,
     };
     mindObjectUrl = null;
     current = running;
@@ -319,7 +329,7 @@ export async function startArSession(
       for (const m of mixers) {
         m.update(delta);
       }
-      for (const tick of running.clippingUpdates) {
+      for (const tick of running.overlayUpdates) {
         tick(delta);
       }
       for (const vp of running.videoPlanes) {

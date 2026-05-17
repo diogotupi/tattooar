@@ -63,7 +63,7 @@ async function compileAndDownload(): Promise<void> {
       mind,
       entries: [
         { title: "Arte 1", glb: new ArrayBuffer(0), videoSrc: "videos/borntobe.mp4" },
-        { title: "Onça", glb: new ArrayBuffer(0), overlay: "clipping-stencil" },
+        { title: "Onça", glb: new ArrayBuffer(0), overlay: "demo-3d" },
       ],
     };
 
